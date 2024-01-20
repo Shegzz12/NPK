@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INTELLIGENT FERTILIZER PROCUREMENT DATABASE</title>
+    
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        /* body {
+    margin: 0; /* Remove default margin
+    padding: 0; /* Remove default padding */
+        
+        .background {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            /*background-image: url('https://lgcnews.com/wp-content/uploads/2017/12/North-Cyprus-News-Hospital.jpg'); /* Adjust the path to your background image */
+            /*background-image: url('https://th.bing.com/th/id/R.c6f234128f14e51b919a52ced77b803b?rik=o%2b6YmqJtNYtKjA&pid=ImgRaw&r=0');*/
+            background-image: url('https://th.bing.com/th/id/R.5308dd2b5558f8ab4d030350ea806456?rik=6cy2XBJ3GclQPA&pid=ImgRaw&r=0');
+            background-size: cover;
+            background-position: center;
+            filter: blur(6px); /* Adjust the blur amount as needed */
+        }
+        
+        h2,h1 {
+            color: #037c17;
+            z-index: 1;
+        }
+    
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.014);
+            background-color: rgba(255, 255, 255, 0.027); /* Adjust the alpha value for transparency */
+            border-radius: 1px;
+            overflow: hidden;
+            z-index: 1;
+        }
+    
+        th, td {
+            border: 1px solid #dddddd52;
+            padding: 12px;
+            text-align: left;
+        }
+    
+        th {
+            background-color: #06a027;
+            color: white;
+        }
+    
+        tbody tr:nth-child(odd) {
+            background-color: #f9f9f954;
+        }
+    
+        tbody tr:nth-child(even) {
+            background-color: #e0e0e000;
+        }
+    
+        tbody tr:hover {
+            background-color: #8888b8bd;
+        }
+    
+        #download-btn {
+            background-color: #06a027;
+            line-height: normal;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .fixed-element {
+            position: fixed;
+        }
+        html, body {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+        }
+        body {
+            overflow: auto; /* or overflow-y: auto; for vertical scrollbar only */
+        }
+
+
+
+        #delete-btn {
+            background-color: #75030d;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #download-dataset {
+            background-color: #818578;
+            color: rgb(56, 231, 12);
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    
+        #download-btn:hover {
+            background-color: #4645a0;
+        }
+    </style>
+    
+    <div class="background"></div>
+    
+    
+    </head>
+<body>
+
+    <h2>FEDERAL UNIVERSITY OF TECHNOLOGY, MINNA</h2>
+    <h2>FEDERAL UNIVERSITY OF TECHNOLOGY, MINNA</h2>
+    <h1>FEDERAL UNIVERSITY OF TECHNOLOGY, MINNA</h1>
+<h2>Intelligent Fertilizer Procurement System for Commercial Farms</h2>
+<h3>DONE BY: OmaTechnologies</h3>
+
+<table id="data-table">
+    <thead>
+        <tr>
+            <th>TIMESTAMP</th>
+            <th>N_VALUE</th>
+            <th>P_VALUE</th>
+            <th>K_VALUE</th>
+            <th>FERTILIZER</th>
+            <th>ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Data will be dynamically added here -->
+    </tbody>
+</table>
+
+<body>
+    <button id="download-btn" onclick="downloadCSV()">Download CSV</button>
+</body>
+
+<button id="download-dataset" onclick="download_dataset()">Download Dataset</button>
+<button id="delete-btn" onclick="deleteAllData()">Delete CSV data</button>
+
+<script>
+    // Function to delete all data
+    function deleteAllData() {
+        fetch('/delete_all_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+            // Handle success, e.g., update the table or show a success message
+        })
+        .catch(error => console.error('Error deleting all data:', error));
+    }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"></script>
+<script>
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+
+    socket.on('update_data', function(msg) {
+        updateTable(msg.data);
+    });
+
+    function updateTable(data) {
+    console.log('Received data:', data);
+
+    var tableBody = document.getElementById('data-table').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = '';  // Clear existing data
+
+        // Insert new rows at the top of the table
+    for (var i = data.length-10; i < data.length; i++) {
+        console.log('Processing data row:', data[i]);
+        
+        var row = tableBody.insertRow(0);  // Insert at the beginning of the table
+        var cellTIMESTAMP = row.insertCell(0);  // Display timestamp first
+        var cellN_VALUE = row.insertCell(1);
+        var cellP_VALUE = row.insertCell(2);
+        var cellK_VALUE = row.insertCell(3);
+        var cellFERTILIZER = row.insertCell(4);
+        var cellId = row.insertCell(5);  // Display ID last
+
+        cellTIMESTAMP.innerHTML = data[i].TIMESTAMP;
+        cellN_VALUE.innerHTML = data[i].N_VALUE;
+        cellP_VALUE.innerHTML = data[i].P_VALUE;
+        cellK_VALUE.innerHTML = data[i].K_VALUE;
+        cellFERTILIZER.innerHTML = data[i].FERTILIZER;
+        cellId.innerHTML = data[i].id;
+    }
+
+}
+
+    // Function to download CSV data
+function downloadCSV() {
+// Make a request to the server to download the CSV file
+window.location.href = '/download_csv';
+}
+function download_dataset() {
+// Make a request to the server to download the CSV file
+window.location.href = '/download_dataset';
+}
+
+
+</script>
+
+</body>
+</html>
